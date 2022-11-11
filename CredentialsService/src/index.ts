@@ -1,20 +1,13 @@
 import { AppDataSource } from "./data-source"
 import { User } from "./entity/User"
+const express = require("express");
 
-AppDataSource.initialize().then(async () => {
+const app = express();
 
-    console.log("Inserting a new user into the database...")
-    const user = new User()
-    user.firstName = "Timber"
-    user.lastName = "Saw"
-    user.age = 25
-    await AppDataSource.manager.save(user)
-    console.log("Saved a new user with id: " + user.id)
+AppDataSource.initialize().catch(error => console.log(error))
 
-    console.log("Loading users from the database...")
-    const users = await AppDataSource.manager.find(User)
-    console.log("Loaded users: ", users)
+require("./routes/credentials.routes")(app);
 
-    console.log("Here you can setup and run express / fastify / any other framework.")
-
-}).catch(error => console.log(error))
+var listener = app.listen(8888, function() {
+    console.log('Listening on port ' + listener.address().port);
+})
